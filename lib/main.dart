@@ -5,6 +5,7 @@ import 'package:libre/config/app_theme.dart';
 import 'package:libre/config/routes.dart';
 import 'package:libre/page/auth/onboarding.dart';
 import 'package:libre/page/member/member_homepage/member_homepage.dart';
+import 'package:libre/page/member/member_nav_bar/member_nav_bar.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -69,7 +70,7 @@ class Libre extends StatelessWidget {
       navigatorKey: navigatorKey,
       theme: appTheme,
       routes: routes,
-      initialRoute: ValidationUser.id,
+      initialRoute: MemberNavBar.id,
     );
   }
 }
