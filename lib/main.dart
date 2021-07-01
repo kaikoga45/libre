@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:libre/config/app_theme.dart';
 import 'package:libre/config/routes.dart';
-import 'package:libre/page/member/member_homepage/member_homepage.dart';
+import 'package:libre/page/auth/onboarding.dart';
 
 void main() {
   runApp(Libre());
@@ -13,9 +13,10 @@ class Libre extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: appTheme,
       routes: routes,
-      initialRoute: MemberHomepage.id,
+      initialRoute: Onboarding.id,
     );
   }
 }
