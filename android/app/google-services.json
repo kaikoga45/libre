@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "397121710166",
+    "project_id": "libre-45",
+    "storage_bucket": "libre-45.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:397121710166:android:ccf14b8762b1eb41aa73f7",
+        "android_client_info": {
+          "package_name": "dev.kaikoga.libre"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "397121710166-3og1tuvh3rhaktjecqk0f3mukp14biuc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnPNwhWVJRLVtOaHORBo48c3_W8R44pxk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "397121710166-3og1tuvh3rhaktjecqk0f3mukp14biuc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
