@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:libre/domain/auth_helper.dart';
+import 'package:libre/main.dart';
 
 class SignUp extends StatefulWidget {
   static const id = '/sign_up';
@@ -13,6 +15,9 @@ class SignUp extends StatefulWidget {
 class _SignUpState extends State<SignUp> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  String? _errorMessage;
+  bool _isLoading = false;
+
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -109,6 +114,10 @@ class _SignUpState extends State<SignUp> {
                           validator: (email) {
                             if (email == null || email.isEmpty) {
                               return 'Please enter your email';
+                            } else if (_errorMessage == "invalid-email") {
+                              return "Please enter a valid email address";
+                            } else if (_errorMessage == "user-not-found") {
+                              return "Sorry, We couldn't find your account";
                             }
                             return null;
                           },
@@ -151,6 +160,8 @@ class _SignUpState extends State<SignUp> {
                           validator: (pass) {
                             if (pass == null || pass.isEmpty) {
                               return 'Please enter your password';
+                            } else if (_errorMessage == "wrong-password") {
+                              return "Password you entered is incorrect";
                             }
                             return null;
                           },
@@ -166,14 +177,26 @@ class _SignUpState extends State<SignUp> {
                     style: ElevatedButton.styleFrom(
                       fixedSize: Size(double.infinity, 50),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            behavior: SnackBarBehavior.floating,
-                            content: Text('Sucess'),
-                          ),
-                        );
+                        setState(() {
+                          _isLoading = !_isLoading;
+                        });
+
+                        final Map<String, dynamic> output = await AuthHelper(
+                          email: this._emailController.text,
+                          pass: this._passwordController.text,
+                        ).signUp();
+
+                        setState(() {
+                          _isLoading = !_isLoading;
+                        });
+                        if (output["valid"] == true) {
+                          navigatorKey.currentState!.pop();
+                        } else {
+                          _errorMessage = output["message"];
+                          _formKey.currentState!.validate();
+                        }
                       }
                     },
                     child: Text(
