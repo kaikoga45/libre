@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-class MemberSettings extends StatelessWidget {
-  MemberSettings({Key? key}) : super(key: key);
+class AdminSettings extends StatelessWidget {
+  AdminSettings({Key? key}) : super(key: key);
   final _auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
