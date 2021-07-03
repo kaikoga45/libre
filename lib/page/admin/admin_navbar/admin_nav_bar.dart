@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:libre/page/member/member_homepage/member_homepage.dart';
-import 'package:libre/page/member/member_settings/member_setting.dart';
-import 'package:libre/page/member/member_shop_bag/member_shop_bag.dart';
+import 'package:libre/page/admin/admin_database/admin_database.dart';
+import 'package:libre/page/admin/admin_homepage/admin_homepage.dart';
+import 'package:libre/page/admin/admin_settings/admin_settings.dart';
 
 final List<Widget> _widgetOptionsAtHomepage = [
-  MemberHomepage(),
-  MemberShopBag(),
-  MemberSettings(),
+  AdminHomepage(),
+  AdminDatabase(),
+  AdminSettings(),
 ];
 
-class MemberNavBar extends StatefulWidget {
-  static const id = '/member_nav_bar';
+class AdminNavBar extends StatefulWidget {
+  static const id = '/admin_nav_bar';
 
   @override
-  _MemberNavBarState createState() => _MemberNavBarState();
+  _AdminNavBarState createState() => _AdminNavBarState();
 }
 
-class _MemberNavBarState extends State<MemberNavBar> {
+class _AdminNavBarState extends State<AdminNavBar> {
   int _selectedIndex = 0;
 
   @override
@@ -42,12 +42,11 @@ class _MemberNavBarState extends State<MemberNavBar> {
           currentIndex: _selectedIndex,
           items: [
             BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.home),
+              icon: Icon(Icons.receipt),
               label: 'Home',
             ),
             BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.shoppingBag),
-                label: 'Shopping Bag'),
+                icon: Icon(FontAwesomeIcons.database), label: 'Database'),
             BottomNavigationBarItem(
                 icon: Icon(Icons.settings), label: 'Settings'),
           ],
