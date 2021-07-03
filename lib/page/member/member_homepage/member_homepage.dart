@@ -1,4 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:libre/model/book.dart';
+import 'package:libre/page/member/display_all_book/display_all_book.dart';
+import 'package:libre/page/member/member_detail_book/member_detail_book.dart';
 import 'package:libre/util/time.dart';
 
 class MemberHomepage extends StatefulWidget {
@@ -11,6 +15,8 @@ class MemberHomepage extends StatefulWidget {
 }
 
 class _MemberHomepageState extends State<MemberHomepage> {
+  final _firetore = FirebaseFirestore.instance;
+
   @override
   Widget build(BuildContext context) {
     final _textTheme = Theme.of(context).textTheme;
@@ -77,109 +83,143 @@ class _MemberHomepageState extends State<MemberHomepage> {
                           ),
                           Expanded(
                             child: TabBarView(children: [
-                              ListView(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.vertical,
-                                children: [
-                                  Container(
-                                    height: 150,
-                                    width: 250,
-                                    child: RotatedBox(
-                                      quarterTurns: 1,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(5),
-                                        child: FadeInImage.assetNetwork(
-                                          fit: BoxFit.cover,
-                                          height: 150,
-                                          width: 250,
-                                          fadeInCurve: Curves.bounceIn,
-                                          placeholder:
-                                              'assets/fade_placeholder.png',
-                                          image:
-                                              'https://images-na.ssl-images-amazon.com/images/I/51kL+CgKRTL._SY344_BO1,204,203,200_.jpg',
-                                        ),
+                              StreamBuilder<
+                                  QuerySnapshot<Map<String, dynamic>>>(
+                                stream: _firetore
+                                    .collection('books')
+                                    .orderBy('total_rent', descending: true)
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  } else {
+                                    return Container(
+                                      height: 150,
+                                      width: 250,
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: snapshot.data?.docs.length,
+                                        scrollDirection: Axis.vertical,
+                                        itemBuilder: (context, index) {
+                                          final DocumentSnapshot? _doc =
+                                              snapshot.data?.docs[index];
+                                          return GestureDetector(
+                                            onTap: () {
+                                              Navigator.pushNamed(
+                                                context,
+                                                MemberDetailBook.id,
+                                                arguments: Book(
+                                                  bookId: _doc!.id,
+                                                  title: _doc['title'],
+                                                  author: _doc['author'],
+                                                  description:
+                                                      _doc['description'],
+                                                  cost: _doc['cost'],
+                                                  urlImage: _doc['url_image'],
+                                                ),
+                                              );
+                                            },
+                                            child: Container(
+                                              height: 150,
+                                              width: 250,
+                                              margin:
+                                                  EdgeInsets.only(bottom: 10),
+                                              child: RotatedBox(
+                                                quarterTurns: 1,
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  child:
+                                                      FadeInImage.assetNetwork(
+                                                    fit: BoxFit.cover,
+                                                    height: 150,
+                                                    width: 250,
+                                                    fadeInCurve:
+                                                        Curves.bounceIn,
+                                                    placeholder:
+                                                        'assets/fade_placeholder.png',
+                                                    image: _doc!['url_image'],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
                                       ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Container(
-                                    height: 150,
-                                    width: 250,
-                                    child: RotatedBox(
-                                      quarterTurns: 1,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(5),
-                                        child: FadeInImage.assetNetwork(
-                                          fit: BoxFit.cover,
-                                          height: 150,
-                                          width: 250,
-                                          fadeInCurve: Curves.bounceIn,
-                                          placeholder:
-                                              'assets/fade_placeholder.png',
-                                          image:
-                                              'https://images-na.ssl-images-amazon.com/images/I/41pFYB7wXTL._SY291_BO1,204,203,200_QL40_FMwebp_.jpg',
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                    );
+                                  }
+                                },
                               ),
-                              Container(
-                                height: 150,
-                                width: 250,
-                                child: ListView(
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.vertical,
-                                  children: [
-                                    Container(
+                              StreamBuilder<
+                                  QuerySnapshot<Map<String, dynamic>>>(
+                                stream: _firetore
+                                    .collection('books')
+                                    .orderBy('timestamps', descending: true)
+                                    .snapshots(),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  } else {
+                                    return Container(
                                       height: 150,
                                       width: 250,
-                                      child: RotatedBox(
-                                        quarterTurns: 1,
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          child: FadeInImage.assetNetwork(
-                                            fit: BoxFit.cover,
-                                            height: 150,
-                                            width: 250,
-                                            fadeInCurve: Curves.bounceIn,
-                                            placeholder:
-                                                'assets/fade_placeholder.png',
-                                            image:
-                                                'https://images-na.ssl-images-amazon.com/images/I/51ojiVgJY2L._SX318_BO1,204,203,200_.jpg',
-                                          ),
-                                        ),
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: snapshot.data?.docs.length,
+                                        scrollDirection: Axis.vertical,
+                                        itemBuilder: (context, index) {
+                                          final DocumentSnapshot? _doc =
+                                              snapshot.data?.docs[index];
+                                          return GestureDetector(
+                                            onTap: () {
+                                              Navigator.pushNamed(
+                                                context,
+                                                MemberDetailBook.id,
+                                                arguments: Book(
+                                                  bookId: _doc!.id,
+                                                  title: _doc['title'],
+                                                  author: _doc['author'],
+                                                  description:
+                                                      _doc['description'],
+                                                  cost: _doc['cost'],
+                                                  urlImage: _doc['url_image'],
+                                                ),
+                                              );
+                                            },
+                                            child: Container(
+                                              height: 150,
+                                              width: 250,
+                                              margin:
+                                                  EdgeInsets.only(bottom: 10),
+                                              child: RotatedBox(
+                                                quarterTurns: 1,
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(5),
+                                                  child:
+                                                      FadeInImage.assetNetwork(
+                                                    fit: BoxFit.cover,
+                                                    height: 150,
+                                                    width: 250,
+                                                    fadeInCurve:
+                                                        Curves.bounceIn,
+                                                    placeholder:
+                                                        'assets/fade_placeholder.png',
+                                                    image: _doc!['url_image'],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
                                       ),
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    Container(
-                                      height: 150,
-                                      width: 250,
-                                      child: RotatedBox(
-                                        quarterTurns: 1,
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                          child: FadeInImage.assetNetwork(
-                                            fit: BoxFit.cover,
-                                            height: 150,
-                                            width: 250,
-                                            fadeInCurve: Curves.bounceIn,
-                                            placeholder:
-                                                'assets/fade_placeholder.png',
-                                            image:
-                                                'https://images-na.ssl-images-amazon.com/images/I/51nVDPd094L._SY291_BO1,204,203,200_QL40_FMwebp_.jpg',
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                    );
+                                  }
+                                },
                               ),
                             ]),
                           ),
@@ -199,93 +239,86 @@ class _MemberHomepageState extends State<MemberHomepage> {
                       Row(
                         children: [
                           Text(
-                            'Discover Random Book',
+                            'Discover All Our Book',
                             style: _textTheme.subtitle1,
                           ),
                           Spacer(),
-                          Row(
-                            children: [
-                              Text(
-                                'View All',
-                                style: _textTheme.overline,
-                              ),
-                              IconButton(
-                                onPressed: () {},
-                                icon: Icon(
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, DisplayAllBook.id);
+                            },
+                            child: Row(
+                              children: [
+                                Text(
+                                  'View All',
+                                  style: _textTheme.overline,
+                                ),
+                                Icon(
                                   Icons.arrow_forward_ios,
                                   size: 12,
                                   color: Color(0xFF4f4f4f),
-                                ),
-                              ),
-                            ],
+                                )
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                      Expanded(
-                        child: ListView(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(5),
-                              child: FadeInImage.assetNetwork(
-                                fit: BoxFit.cover,
-                                height: 150,
-                                width: 100,
-                                fadeInCurve: Curves.bounceIn,
-                                placeholder: 'assets/fade_placeholder.png',
-                                image:
-                                    'https://images-na.ssl-images-amazon.com/images/I/5100eNNt32L._SY291_BO1,204,203,200_QL40_FMwebp_.jpg',
+                      StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                        stream: _firetore
+                            .collection('books')
+                            .orderBy('timestamps')
+                            .snapshots(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else {
+                            return Expanded(
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: snapshot.data?.docs.length,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) {
+                                  final DocumentSnapshot? _doc =
+                                      snapshot.data?.docs[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        MemberDetailBook.id,
+                                        arguments: Book(
+                                          bookId: _doc!.id,
+                                          title: _doc['title'],
+                                          author: _doc['author'],
+                                          description: _doc['description'],
+                                          cost: _doc['cost'],
+                                          urlImage: _doc['url_image'],
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.only(right: 15),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(5),
+                                        child: FadeInImage.assetNetwork(
+                                          fit: BoxFit.cover,
+                                          height: 150,
+                                          width: 100,
+                                          fadeInCurve: Curves.bounceIn,
+                                          placeholder:
+                                              'assets/fade_placeholder.png',
+                                          image: _doc!['url_image'],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(5),
-                              child: FadeInImage.assetNetwork(
-                                fit: BoxFit.cover,
-                                height: 150,
-                                width: 100,
-                                fadeInCurve: Curves.bounceIn,
-                                placeholder: 'assets/fade_placeholder.png',
-                                image:
-                                    'https://images-na.ssl-images-amazon.com/images/I/51dkUyVGeyL._SX331_BO1,204,203,200_.jpg',
-                              ),
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(5),
-                              child: FadeInImage.assetNetwork(
-                                fit: BoxFit.cover,
-                                height: 150,
-                                width: 100,
-                                fadeInCurve: Curves.bounceIn,
-                                placeholder: 'assets/fade_placeholder.png',
-                                image:
-                                    'https://images-na.ssl-images-amazon.com/images/I/51itAvYF-UL._SY291_BO1,204,203,200_QL40_FMwebp_.jpg',
-                              ),
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(5),
-                              child: FadeInImage.assetNetwork(
-                                fit: BoxFit.cover,
-                                height: 150,
-                                width: 100,
-                                fadeInCurve: Curves.bounceIn,
-                                placeholder: 'assets/fade_placeholder.png',
-                                image:
-                                    'https://images-na.ssl-images-amazon.com/images/I/51VGtPV-tIL._SY291_BO1,204,203,200_QL40_FMwebp_.jpg',
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
+                            );
+                          }
+                        },
+                      ),
                     ],
                   ),
                 ),
