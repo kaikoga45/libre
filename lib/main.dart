@@ -1,10 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:libre/config/app_theme.dart';
 import 'package:libre/config/routes.dart';
+import 'package:libre/page/admin/admin_navbar/admin_nav_bar.dart';
 import 'package:libre/page/auth/onboarding.dart';
-import 'package:libre/page/member/member_homepage/member_homepage.dart';
 import 'package:libre/page/member/member_nav_bar/member_nav_bar.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -51,7 +52,27 @@ class ValidationUser extends StatelessWidget {
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return MemberHomepage();
+          final _auth = FirebaseAuth.instance;
+          final user = _auth.currentUser;
+
+          return FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              future: FirebaseFirestore.instance
+                  .collection('users')
+                  .where('source_UID', isEqualTo: user!.uid)
+                  .get(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  final DocumentSnapshot? _doc = snapshot.data!.docs[0];
+                  if (_doc!['type'] == '0') {
+                    return MemberNavBar();
+                  } else {
+                    return AdminNavBar();
+                  }
+                }
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              });
         } else {
           return Onboarding();
         }
@@ -70,7 +91,7 @@ class Libre extends StatelessWidget {
       navigatorKey: navigatorKey,
       theme: appTheme,
       routes: routes,
-      initialRoute: MemberNavBar.id,
+      initialRoute: ValidationUser.id,
     );
   }
 }
