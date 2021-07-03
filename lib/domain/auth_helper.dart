@@ -21,6 +21,7 @@ class AuthHelper {
 
       FirebaseFirestore.instance.collection('users').add({
         "source_UID": user!.uid,
+        "email": this.email,
         "type": '0',
       });
 
